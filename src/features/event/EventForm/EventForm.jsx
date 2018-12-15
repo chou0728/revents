@@ -16,8 +16,9 @@ class EventForm extends Component {
     event: emptyEvent //將event一開始的值設定為emptyEvent
   };
 
-  //hover可以看到說明 (在componentDidMount設定state的話會觸發rerender)
-  //打開ReactDevTool 可以看到按下 EventList 中的 view button 會將EventDashboard的props值selectedEvent重新set，再按下 Create Event後，selectedEvent又變回null
+  // 1. hover可以看到說明 (在componentDidMount設定state的話會觸發rerender)
+  // 2. 是很好的時機點來 render 從後端API取來的data
+  // 3. 打開ReactDevTool 可以看到按下 EventList 中的 view button 會將EventDashboard的props值selectedEvent重新set，再按下 Create Event後，selectedEvent又變回null
   componentDidMount() {
     if (this.props.selectedEvent !== null) {
       this.setState({
@@ -29,6 +30,7 @@ class EventForm extends Component {
   // 1. 通常 componentWillReceiveProps 要寫在 componentDidMount 的後面
   // 2. 當第一次按下 view button 的時候並不會觸發 componentWillReceiveProps，而是只會觸發componentDidMount
   // 3. 當按下第二次 view button 的時候就會開始觸發 componentWillReceiveProps了，而這個時候可以自由運用原本的props或是新的nextProps
+  // 4. 在 React 17 中 被視為unsafe，但仍然可以使用
   componentWillReceiveProps(nextProps) {
     // console.log('current', this.props.selectedEvent);
     // console.log('next: ', nextProps.selectedEvent);
