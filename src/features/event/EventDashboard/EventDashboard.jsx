@@ -8,7 +8,7 @@ const eventsDashboard = [
   {
     id: '1',
     title: 'Trip to Tower of London',
-    date: '2018-03-27T11:00:00+00:00',
+    date: '2018-03-27',
     category: 'culture',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -32,7 +32,7 @@ const eventsDashboard = [
   {
     id: '2',
     title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-28T14:00:00+00:00',
+    date: '2018-03-28',
     category: 'drinks',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -58,36 +58,80 @@ const eventsDashboard = [
 class EventDashboard extends Component {
   state = {
     events: eventsDashboard, //將上面的const拿來賦予
-    isOpen: false //用來決定 EventForm 開關與否
+    isOpen: false, //用來決定 EventForm 開關與否
+    selectedEvent: null
   };
 
-  handleFormOpen = (value) => () => {
+  handleFormOpen = value => () => {
     //未bind前，這裡的this是按下的那顆Button(因為是Button呼叫他的)，bind後，this變成EventDashboard
     this.setState({
+      selectedEvent: null,
       isOpen: true
     });
-    console.log(value)
-}
+    console.log(value);
+  };
+
   handleCancel = () => {
     this.setState({
       isOpen: false
     });
-  }
-  handleCreateEvent = (newEvent) => {
-    newEvent.id = cuid() //自動產生id的plugin
-    newEvent.hostPhotoURL = '/assets/user.png'
-    const updateEvents = [...this.state.events,newEvent]
+  };
+
+  // update的時候將events陣列與updateEvents陣列中每個物件用id去跟比對，看現在傳上來要update的是哪一個物件
+  // 比對到要update的物件後，利用 Object.assign的方式去複製updateEvents中的updateEvent物件 (但並不是深拷貝)
+  // JavaScript 的 Object.assign 陷阱 : https://jigsawye.com/2015/10/06/javascript-object-assign/
+  handleUpdateEvent = updateEvent => {
+    this.setState({
+      events: this.state.events.map(event => {
+        if (event.id === updateEvent.id) {
+          return Object.assign({}, updateEvent);
+        } else {
+          return event;
+        }
+      }),
+      isOpen: false,
+      selectedEvent: null
+    });
+  };
+
+  //因為eventToOpen會從EventListItem傳到EventList，再透過EventList傳上來，所以要用2個arrow，這樣就不用寫2次callback
+  handleOpenEvent = eventToOpen => () => {
+    this.setState({
+      selectedEvent: eventToOpen,
+      isOpen: true
+    });
+  };
+
+  handleCreateEvent = newEvent => {
+    newEvent.id = cuid(); //自動產生id的plugin
+    newEvent.hostPhotoURL = '/assets/user.png';
+    const updateEvents = [...this.state.events, newEvent];
     this.setState({
       events: updateEvents,
       isOpen: false
+    });
+  };
+
+  handleDeleteEvent = (eventId) =>() => {
+    //filter會傳回符合條件的物件變成新的array並吐回
+    //將從子組件中被點擊的event 的 eventId跟原本events陣列中的id做比對，傳回所有物件，除了event.id !== eventId的那個物件
+    const updatedEvents = this.state.events.filter(event => event.id !== eventId);
+    this.setState({
+      events: updatedEvents
     })
-  }
+  };
 
   render() {
+    const { selectedEvent } = this.state;
     return (
       <Grid>
         <Grid.Column width={10}>
-          <EventList events={this.state.events} />
+          <EventList
+            onOpenEvent={this.handleOpenEvent}
+            deleteEvent={this.handleDeleteEvent}
+            events={this.state.events}
+          />
+          {/*  onOpenEvent 跟 events 都是props 傳下去給子組件，其中onOpenEvent傳的是EventDashboard父層組件中的一個function，傳到底下去給子組件使用，這樣子組件就可以直接set父層的state*/}
         </Grid.Column>
         <Grid.Column width={6}>
           <Button
@@ -95,7 +139,15 @@ class EventDashboard extends Component {
             content="Create Event"
             onClick={this.handleFormOpen('Button click')}
           />
-          {this.state.isOpen && <EventForm handleCancel={this.handleCancel} createEvent={this.handleCreateEvent}/>}
+          {this.state.isOpen && (
+            <EventForm
+              selectedEvent={selectedEvent}
+              handleCancel={this.handleCancel}
+              updateEvent={this.handleUpdateEvent}
+              createEvent={this.handleCreateEvent}
+            />
+          )}
+          {/* 透過handleOpenEvent()改了state後，馬上就使用selectedEvent 當作props傳下去給EventForm了，但EventForm拿到selectedEvent這個props後還需要透過componentDidMount中寫setState才能夠將畫面重新渲染一遍 */}
         </Grid.Column>
       </Grid>
     );

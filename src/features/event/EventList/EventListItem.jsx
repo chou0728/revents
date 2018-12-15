@@ -4,7 +4,7 @@ import EventListAttendee from './EventListAttendee';
 
 class EventListItem extends Component {
   render() {
-    const {event} = this.props //jsx中宣告變數要加上{}
+    const { event, onOpenEvent, deleteEvent } = this.props; //解構賦值
     return (
       <div>
         <Segment.Group>
@@ -19,7 +19,7 @@ class EventListItem extends Component {
                 <Item.Content>
                   <Item.Header as="a">{event.title}</Item.Header>
                   <Item.Description>
-                    Hosted by <a>{event.hostBy}</a>
+                    Hosted by <a>{event.hostedBy}</a>
                   </Item.Description>
                 </Item.Content>
               </Item>
@@ -27,19 +27,34 @@ class EventListItem extends Component {
           </Segment>
           <Segment>
             <span>
-              <Icon name="clock" /> {event.date} |<Icon name="marker" /> {event.venue}
+              <Icon name="clock" /> {event.date} |<Icon name="marker" />{' '}
+              {event.venue}
             </span>
           </Segment>
           <Segment secondary>
             <List horizontal>
-              {event.attendees && event.attendees.map( attendee => 
-                <EventListAttendee key={attendee.id} attendee={attendee}/>
-              )}
+              {event.attendees &&
+                event.attendees.map(attendee => (
+                  <EventListAttendee key={attendee.id} attendee={attendee} />
+                ))}
             </List>
           </Segment>
           <Segment clearing>
             <span>{event.description}</span>
-            <Button as="a" color="teal" floated="right" content="View" />
+            <Button
+              onClick={deleteEvent(event.id)}
+              as="a"
+              color="red"
+              floated="right"
+              content="Delete"
+            />
+            <Button
+              onClick={onOpenEvent(event)}
+              as="a"
+              color="teal"
+              floated="right"
+              content="View"
+            />
           </Segment>
         </Segment.Group>
       </div>
