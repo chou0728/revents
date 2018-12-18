@@ -1,11 +1,11 @@
 import React from 'react';
 
-function UserDetailedPage() {
+const UserDetailedPage = () => {
   return (
     <div>
       <h1>UserDetailedPage</h1>
     </div>
   );
-}
+};
 
 export default UserDetailedPage;
