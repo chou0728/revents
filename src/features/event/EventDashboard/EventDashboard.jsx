@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import cuid from 'cuid';
+import { connect } from 'react-redux';
 import { Grid, Button } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import EventForm from '../EventForm/EventForm';
 
 
+const mapState = (state) => ({
+  events: state.events
+})
 
 class EventDashboard extends Component {
   state = {
-    events: eventsDashboard, //將上面的const拿來賦予
     isOpen: false, //用來決定 EventForm 開關與否
     selectedEvent: null
   };
@@ -73,14 +76,15 @@ class EventDashboard extends Component {
   };
 
   render() {
-    const { selectedEvent } = this.state;
+    const { isOpen, selectedEvent } = this.state;
+    const { events } = this.props;
     return (
       <Grid>
         <Grid.Column width={10}>
           <EventList
             onOpenEvent={this.handleOpenEvent}
             deleteEvent={this.handleDeleteEvent}
-            events={this.state.events}
+            events={events}
           />
           {/*  onOpenEvent 跟 events 都是props 傳下去給子組件，其中onOpenEvent傳的是EventDashboard父層組件中的一個function，傳到底下去給子組件使用，這樣子組件就可以直接set父層的state*/}
         </Grid.Column>
@@ -90,7 +94,7 @@ class EventDashboard extends Component {
             content="Create Event"
             onClick={this.handleFormOpen('Button click')}
           />
-          {this.state.isOpen && (
+          {isOpen && (
             <EventForm
               selectedEvent={selectedEvent}
               handleCancel={this.handleCancel}
@@ -105,4 +109,4 @@ class EventDashboard extends Component {
   }
 }
 
-export default EventDashboard;
+export default connect(mapState)(EventDashboard);
