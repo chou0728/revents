@@ -62,6 +62,7 @@ const initialState = [
   }
 
   export const updateEvent = (state, payload) => {
+    console.log(...state)
     return [
       ...state.filter(event => event.id !== payload.event.id), //先將原陣列過濾掉要update的event
       Object.assign({}, payload.event) //再重新assing最新的evenT進去

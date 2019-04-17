@@ -4,11 +4,18 @@ import { connect } from 'react-redux';
 import { Grid, Button } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import EventForm from '../EventForm/EventForm';
+import { createEvent, updateEvent, deleteEvent } from '../eventReducer';
 
 
 const mapState = (state) => ({
   events: state.events
 })
+
+const actions = {
+  createEvent,
+  updateEvent,
+  deleteEvent
+}
 
 class EventDashboard extends Component {
   state = {
@@ -35,14 +42,8 @@ class EventDashboard extends Component {
   // 比對到要update的物件後，利用 Object.assign的方式去複製updateEvents中的updateEvent物件 (但並不是深拷貝)
   // JavaScript 的 Object.assign 陷阱 : https://jigsawye.com/2015/10/06/javascript-object-assign/
   handleUpdateEvent = updateEvent => {
+    this.props.updateEvent(updateEvent)
     this.setState({
-      events: this.state.events.map(event => {
-        if (event.id === updateEvent.id) {
-          return Object.assign({}, updateEvent);
-        } else {
-          return event;
-        }
-      }),
       isOpen: false,
       selectedEvent: null
     });
@@ -59,21 +60,24 @@ class EventDashboard extends Component {
   handleCreateEvent = newEvent => {
     newEvent.id = cuid(); //自動產生id的plugin
     newEvent.hostPhotoURL = '/assets/user.png';
-    const updateEvents = [...this.state.events, newEvent];
+    this.props.createEvent(newEvent)
     this.setState({
-      events: updateEvents,
       isOpen: false
     });
   };
 
-  handleDeleteEvent = (eventId) =>() => {
-    //filter會傳回符合條件的物件變成新的array並吐回
-    //將從子組件中被點擊的event 的 eventId跟原本events陣列中的id做比對，傳回所有物件，除了event.id !== eventId的那個物件
-    const updatedEvents = this.state.events.filter(event => event.id !== eventId);
-    this.setState({
-      events: updatedEvents
-    })
-  };
+  handleDeleteEvent = eventId => () => {
+    this.props.deleteEvent(eventId)
+  }
+  
+  // handleDeleteEvent = (eventId) =>() => {
+  //   //filter會傳回符合條件的物件變成新的array並吐回
+  //   //將從子組件中被點擊的event 的 eventId跟原本events陣列中的id做比對，傳回所有物件，除了event.id !== eventId的那個物件
+  //   const updatedEvents = this.state.events.filter(event => event.id !== eventId);
+  //   this.setState({
+  //     events: updatedEvents
+  //   })
+  // };
 
   render() {
     const { isOpen, selectedEvent } = this.state;
@@ -109,4 +113,4 @@ class EventDashboard extends Component {
   }
 }
 
-export default connect(mapState)(EventDashboard);
+export default connect(mapState, actions)(EventDashboard);
