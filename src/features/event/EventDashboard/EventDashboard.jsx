@@ -1,63 +1,24 @@
 import React, { Component } from 'react';
 import cuid from 'cuid';
+import { connect } from 'react-redux';
 import { Grid, Button } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import EventForm from '../EventForm/EventForm';
+import { createEvent, updateEvent, deleteEvent } from '../eventReducer';
 
-const eventsDashboard = [
-  {
-    id: '1',
-    title: 'Trip to Tower of London',
-    date: '2018-03-27',
-    category: 'culture',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'London, UK',
-    venue: "Tower of London, St Katharine's & Wapping, London",
-    hostedBy: 'Bob',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
-    attendees: [
-      {
-        id: 'a',
-        name: 'Bob',
-        photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
-      },
-      {
-        id: 'b',
-        name: 'Tom',
-        photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
-      }
-    ]
-  },
-  {
-    id: '2',
-    title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-28',
-    category: 'drinks',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'London, UK',
-    venue: 'Punch & Judy, Henrietta Street, London, UK',
-    hostedBy: 'Tom',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
-    attendees: [
-      {
-        id: 'b',
-        name: 'Tom',
-        photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
-      },
-      {
-        id: 'a',
-        name: 'Bob',
-        photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
-      }
-    ]
-  }
-];
+
+const mapState = (state) => ({
+  events: state.events
+})
+
+const actions = {
+  createEvent,
+  updateEvent,
+  deleteEvent
+}
 
 class EventDashboard extends Component {
   state = {
-    events: eventsDashboard, //將上面的const拿來賦予
     isOpen: false, //用來決定 EventForm 開關與否
     selectedEvent: null
   };
@@ -81,14 +42,8 @@ class EventDashboard extends Component {
   // 比對到要update的物件後，利用 Object.assign的方式去複製updateEvents中的updateEvent物件 (但並不是深拷貝)
   // JavaScript 的 Object.assign 陷阱 : https://jigsawye.com/2015/10/06/javascript-object-assign/
   handleUpdateEvent = updateEvent => {
+    this.props.updateEvent(updateEvent)
     this.setState({
-      events: this.state.events.map(event => {
-        if (event.id === updateEvent.id) {
-          return Object.assign({}, updateEvent);
-        } else {
-          return event;
-        }
-      }),
       isOpen: false,
       selectedEvent: null
     });
@@ -105,31 +60,35 @@ class EventDashboard extends Component {
   handleCreateEvent = newEvent => {
     newEvent.id = cuid(); //自動產生id的plugin
     newEvent.hostPhotoURL = '/assets/user.png';
-    const updateEvents = [...this.state.events, newEvent];
+    this.props.createEvent(newEvent)
     this.setState({
-      events: updateEvents,
       isOpen: false
     });
   };
 
-  handleDeleteEvent = (eventId) =>() => {
-    //filter會傳回符合條件的物件變成新的array並吐回
-    //將從子組件中被點擊的event 的 eventId跟原本events陣列中的id做比對，傳回所有物件，除了event.id !== eventId的那個物件
-    const updatedEvents = this.state.events.filter(event => event.id !== eventId);
-    this.setState({
-      events: updatedEvents
-    })
-  };
+  handleDeleteEvent = eventId => () => {
+    this.props.deleteEvent(eventId)
+  }
+  
+  // handleDeleteEvent = (eventId) =>() => {
+  //   //filter會傳回符合條件的物件變成新的array並吐回
+  //   //將從子組件中被點擊的event 的 eventId跟原本events陣列中的id做比對，傳回所有物件，除了event.id !== eventId的那個物件
+  //   const updatedEvents = this.state.events.filter(event => event.id !== eventId);
+  //   this.setState({
+  //     events: updatedEvents
+  //   })
+  // };
 
   render() {
-    const { selectedEvent } = this.state;
+    const { isOpen, selectedEvent } = this.state;
+    const { events } = this.props;
     return (
       <Grid>
         <Grid.Column width={10}>
           <EventList
             onOpenEvent={this.handleOpenEvent}
             deleteEvent={this.handleDeleteEvent}
-            events={this.state.events}
+            events={events}
           />
           {/*  onOpenEvent 跟 events 都是props 傳下去給子組件，其中onOpenEvent傳的是EventDashboard父層組件中的一個function，傳到底下去給子組件使用，這樣子組件就可以直接set父層的state*/}
         </Grid.Column>
@@ -139,7 +98,7 @@ class EventDashboard extends Component {
             content="Create Event"
             onClick={this.handleFormOpen('Button click')}
           />
-          {this.state.isOpen && (
+          {isOpen && (
             <EventForm
               selectedEvent={selectedEvent}
               handleCancel={this.handleCancel}
@@ -154,4 +113,4 @@ class EventDashboard extends Component {
   }
 }
 
-export default EventDashboard;
+export default connect(mapState, actions)(EventDashboard);
