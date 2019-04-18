@@ -30,7 +30,9 @@ class TestComponent extends Component {
 
 //透過connect過完水後回傳一個新的component後，TestComponent中的props就有store裡的action與state值了
 //透過React devTool 可以看到TestComponent component被 connect包起來
+//透過connect 將redux中的state，使用MapStateToProps來傳給目前這個container component
+//透過connect 將redux中的action，使用MapDispatchToProps來傳給目前這個container component
 export default connect(
-  mapState,
-  actions
+  mapState, //MapStateToProps
+  actions //MapDispatchToProps
 )(TestComponent);

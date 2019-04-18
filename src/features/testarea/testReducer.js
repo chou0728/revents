@@ -1,7 +1,7 @@
 import { createReducer } from '../../app/common/util/reducerUtil'
 import { INCREMENT_COUNTER, DECREMENT_COUNTER } from './testConstants';
 const initialState = {
-  data: 46
+  data: 42
 };
 
 //方法一 :使用reducerUtil

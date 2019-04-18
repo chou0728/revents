@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
 
 class EventListItem extends Component {
   render() {
-    const { event, onOpenEvent, deleteEvent } = this.props; //解構賦值
+    const { event, deleteEvent } = this.props; //解構賦值
     return (
       <div>
         <Segment.Group>
@@ -49,12 +50,11 @@ class EventListItem extends Component {
               content="Delete"
             />
             <Button
-              onClick={onOpenEvent(event)}
-              as="a"
+              as={Link}
+              to={`/event/${event.id}`}
               color="teal"
               floated="right"
-              content="View"
-            />
+              content="View"/>
           </Segment>
         </Segment.Group>
       </div>
