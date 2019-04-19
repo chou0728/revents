@@ -1,35 +1,31 @@
 import React from 'react';
+import {connect} from 'react-redux'
 import {Grid} from 'semantic-ui-react';
 import EventDetailedChat from './EventDetailedChat';
 import EventDetailedHeader from './EventDetailedHeader';
 import EventDetailedInfo from './EventDetailedInfo';
 import EventDetailedSideBar from './EventDetailedSideBar';
 
-const event = {
-  id: '1',
-  title: 'Trip to Tower of London',
-  date: '2018-03-27',
-  category: 'culture',
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-  city: 'London, UK',
-  venue: "Tower of London, St Katharine's & Wapping, London",
-  hostedBy: 'Bob',
-  hostPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
-  attendees: [
-    {
-      id: 'a',
-      name: 'Bob',
-      photoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
-    },
-    {
-      id: 'b',
-      name: 'Tom',
-      photoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
-    },
-  ],
-};
+//因為router已經附加在這個component上了，所以除了redux的props(也就是state)外
+// 可以透過設置第二個參數來拿到屬於該component的其他種類的props
+const mapState = (state, ownProps) => {
+  const eventId = ownProps.match.params.id
 
-const EventDetailedPage = () => {
+  let event = {}
+
+  //如果URL中有帶id參數且store中的event陣列有資料 => 使用filter來return新的值
+  if(eventId && state.events.length >0) {
+    event = state.events.filter(event => event.id === eventId)[0]
+  }
+
+  return {
+    event
+  }
+}
+
+//由於上面有使用mapState來return一個包著event的物件
+//所以component現在可以拿到該props了
+const EventDetailedPage = ({event}) => {
   return (
     <Grid>
       <Grid.Column width={10}>
@@ -44,4 +40,4 @@ const EventDetailedPage = () => {
   );
 };
 
-export default EventDetailedPage;
+export default connect(mapState)(EventDetailedPage);
