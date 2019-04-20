@@ -13,28 +13,27 @@ const mapState = (state, ownProps) => {
   //URL帶的id
   const eventId = ownProps.match.params.id;
 
-  let event = {
-    title: '',
-    date: '',
-    city: '',
-    venue: '',
-    hostedBy: '',
-  };
+  //因為react-form會處理form的欄位，所以不需要手動自定義object key
+  let event = {}
 
-  //如果URL不帶id => 代表是要新增，故return 原始的空event
-  if (!eventId) {
-    return event;
-  }
+  // let event = {
+  //   title: '',
+  //   date: '',
+  //   city: '',
+  //   venue: '',
+  //   hostedBy: '',
+  // };
+
 
   // 確認store裡面的events是否有資料
   if (state.events && state.events.length > 0) {
     //傳回URL id 與store中資料id相符的event
     event = state.events.filter (event => event.id === eventId)[0];
-
-    return {
-      event,
-    };
-  }
+  }    
+  //一但給了initialValues後，redux-form就會自動去將值帶入
+  return {
+    initialValues: event
+  };
 };
 
 const actions = {
@@ -52,21 +51,25 @@ const categoryList = [
 ];
 
 class EventForm extends Component {
-  onFormSubmit = e => {
-    e.preventDefault ();
+
+  onFormSubmit = values => {
+    // e.preventDefault (); 不需要了，因為redux form 已經處理掉
     //id存在就是編輯，不存在則是新增
-    if (this.state.event.id) {
-      this.props.updateEvent (this.state.event);
-      this.props.history.goBack ();
-    } else {
+
+    if (!this.props.match.params.id) {
       const newEvent = {
-        ...this.state.event,
+        ...values,
         id: cuid (),
-        hostPhotoURL: 'assets/user.png',
+        hostPhotoURL: '/assets/user.png',
+        hostedBy: 'Bob'
       };
-      this.props.createEvent (newEvent);
-      this.props.history.push ('/events');
+      this.props.createEvent(newEvent);
+      this.props.history.push('/events');
+    } else {
+      this.props.updateEvent(values);
+      this.props.history.goBack();
     }
+
   };
 
   render () {
@@ -74,7 +77,8 @@ class EventForm extends Component {
       <Grid>
         <Grid.Column width={10}>
           <Segment>
-            <Form onSubmit={this.onFormSubmit}>
+            {/* 將submit交由redux form去處理，但還是可以傳入我們定義的function進去 */}
+            <Form onSubmit={this.props.handleSubmit(this.onFormSubmit) }> 
               <Header sub color="teal" content="Event Details" />
               <Field
                 name="title"
@@ -130,6 +134,7 @@ class EventForm extends Component {
 }
 
 //一但用reduxForm HOC包起來後從devtool可以看到 EventForm多了很多props可使用
-export default connect (mapState, actions) (
-  reduxForm ({form: 'eventForm'}) (EventForm)
+//使用 enableReinitialize 來讓redux form 可以在切換頁面時重新賦予initialValues
+export default connect(mapState, actions) (
+  reduxForm({form: 'eventForm', enableReinitialize: true})(EventForm)
 );
