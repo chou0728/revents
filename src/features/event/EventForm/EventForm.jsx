@@ -5,6 +5,7 @@ import {reduxForm, Field} from 'redux-form';
 import {createEvent, updateEvent} from '../eventActions';
 import cuid from 'cuid';
 import TextInput from '../../../app/common/form/TextInput';
+import TextArea from '../../../app/common/form/TextArea';
 
 const mapState = (state, ownProps) => {
   //URL帶的id
@@ -68,38 +69,39 @@ class EventForm extends Component {
                 name="title"
                 type="text"
                 component={TextInput}
-                placeholder="First Name"
+                placeholder="Give your event a name"
               />
               <Field
                 name="category"
                 type="text"
                 component={TextInput}
-                placeholder="First Name"
+                placeholder="What is your event about"
               />
               <Field
                 name="description"
                 type="text"
-                component={TextInput}
-                placeholder="First Name"
+                rows={3}
+                component={TextArea}
+                placeholder="Tell us about your event"
               />
               <Header sub color="teal" content="Event Location Details" />
               <Field
                 name="city"
                 type="text"
                 component={TextInput}
-                placeholder="First Name"
+                placeholder="Event City"
               />
               <Field
                 name="venue"
                 type="text"
                 component={TextInput}
-                placeholder="First Name"
+                placeholder="Event Venue"
               />
               <Field
                 name="date"
                 type="text"
                 component={TextInput}
-                placeholder="First Name"
+                placeholder="Event Date"
               />
               <Button positive type="submit">
                 Submit
