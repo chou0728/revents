@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form'
 import { createEvent, updateEvent } from '../eventActions'
 import cuid from 'cuid';
+import TextInput from '../../../app/common/form/TextInput'
 
 // 宣告一個emptyEvent，用以區別
 // const emptyEvent = {
@@ -112,7 +113,7 @@ class EventForm extends Component {
     return (
       <Segment>
         <Form onSubmit={this.onFormSubmit}>
-          <Field name="title" type="text" component="input" placeholder="First Name"/>
+          <Field name="title" type="text" component={TextInput} placeholder="First Name"/>
           {/* <Form.Field>
             <label>Event Title</label>
             <input
@@ -171,4 +172,5 @@ class EventForm extends Component {
   }
 }
 
+//一但用reduxForm HOC包起來後從devtool可以看到 EventForm多了很多props可使用
 export default connect(mapState, actions)(reduxForm({form:'eventForm'})(EventForm));
