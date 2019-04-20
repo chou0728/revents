@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Segment, Form, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux'
+import { createEvent, updateEvent } from '../eventActions'
+import cuid from 'cuid';
 
 // 宣告一個emptyEvent，用以區別
 // const emptyEvent = {
@@ -41,6 +43,11 @@ const mapState = (state, ownProps) => {
 
 }
 
+const actions = {
+  createEvent,
+  updateEvent
+}
+
 class EventForm extends Component {
   state = {
     event: Object.assign({}, this.props.event)
@@ -76,12 +83,18 @@ class EventForm extends Component {
 
   onFormSubmit = e => {
     e.preventDefault();
-    console.log(this.state.event);
     //id存在就是編輯，不存在則是新增
     if(this.state.event.id){
       this.props.updateEvent(this.state.event);
+      this.props.history.goBack()
     } else {
-      this.props.createEvent(this.state.event);
+      const newEvent = {
+        ...this.state.event,
+        id: cuid(),
+        hostPhotoURL: 'assets/user.png'
+      }
+      this.props.createEvent(newEvent);
+      this.props.history.push('/events');
     }
   };
 
@@ -94,7 +107,6 @@ class EventForm extends Component {
   };
 
   render() {
-    const { handleCancel } = this.props;
     const { event } = this.state; // const { event } = { event :{ title:'',...} } ES6解構賦值，this.state本身是個物件，裡面的屬性名跟左邊的變數名稱一樣，就可以賦予值
     return (
       <Segment>
@@ -148,7 +160,7 @@ class EventForm extends Component {
           <Button positive type="submit">
             Submit
           </Button>
-          <Button type="button" onClick={handleCancel}>
+          <Button type="button" onClick={this.props.history.goBack}>
             Cancel
           </Button>
         </Form>
@@ -157,4 +169,4 @@ class EventForm extends Component {
   }
 }
 
-export default connect(mapState)(EventForm);
+export default connect(mapState, actions)(EventForm);
