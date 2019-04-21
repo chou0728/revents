@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Segment, Form, Button, Grid, Header} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {reduxForm, Field} from 'redux-form';
+import {composeValidators, combineValidators, isRequired, hasLengthGreaterThan} from 'revalidate'
 import {createEvent, updateEvent} from '../eventActions';
 import cuid from 'cuid';
 import TextInput from '../../../app/common/form/TextInput';
@@ -41,6 +42,18 @@ const actions = {
   updateEvent,
 };
 
+const validate = combineValidators({
+  title: isRequired({message:'The event title is required'}),
+  category: isRequired({message:'Please provide a category'}),
+  description: composeValidators(
+    isRequired({message:'Please enter a description'}),
+    hasLengthGreaterThan(4)({message:'Description needs to be at least 5 characters'})
+  )(),
+  city: isRequired('city'),
+  venue: isRequired('venue')
+
+})
+
 const categoryList = [
     {key: 'drinks', text: 'Drinks', value: 'drinks'},
     {key: 'culture', text: 'Culture', value: 'culture'},
@@ -73,6 +86,8 @@ class EventForm extends Component {
   };
 
   render () {
+    //將這三個布林值從redux form的props中解開並傳下去給submit button (pristine是指是否為原始的狀態)
+    const { invalid, submitting, pristine } = this.props
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -119,7 +134,7 @@ class EventForm extends Component {
                 component={TextInput}
                 placeholder="Event Date"
               />
-              <Button positive type="submit">
+              <Button disabled={invalid || submitting || pristine} positive type="submit">
                 Submit
               </Button>
               <Button type="button" onClick={this.props.history.goBack}>
@@ -136,5 +151,5 @@ class EventForm extends Component {
 //一但用reduxForm HOC包起來後從devtool可以看到 EventForm多了很多props可使用
 //使用 enableReinitialize 來讓redux form 可以在切換頁面時重新賦予initialValues
 export default connect(mapState, actions) (
-  reduxForm({form: 'eventForm', enableReinitialize: true})(EventForm)
+  reduxForm({form: 'eventForm', enableReinitialize: true, validate})(EventForm)
 );

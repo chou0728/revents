@@ -3,6 +3,7 @@
 - 使用redxu來管理資料
 - 使用redux-form來管理表單驗證與資料增刪改查
 - 使用semantic-ui-react來美化樣式
+- 搭配 revalidate 來實踐表單驗證
 
 
 ## Available Scripts
