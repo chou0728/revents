@@ -1,28 +1,66 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import {Button} from 'semantic-ui-react'
-import { incrementCounter, decrementCounter } from './testActions'
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button} from 'semantic-ui-react';
+import Script from 'react-load-script';
+import PlacesAutocomplete, { geocodeByAddress,getLatLng } from 'react-places-autocomplete';
+import {incrementCounter, decrementCounter} from './testActions';
 
 // 將store中的state整合在一起
 const mapState = state => ({
-  data: state.test.data
+  data: state.test.data,
 });
 
 // 將需要用到的action整合在一起
 const actions = {
   incrementCounter,
-  decrementCounter
+  decrementCounter,
 };
 
 class TestComponent extends Component {
-  render() {
-    const { incrementCounter, decrementCounter, data } = this.props;
+  state = {
+    address: '',
+    scriptLoaded: false,
+  };
+
+  handleScriptLoad = () => {
+    this.setState ({scriptLoaded: true});
+  };
+
+  handleFormSubmit = event => {
+    event.preventDefault ();
+
+    geocodeByAddress (this.state.address)
+      .then (results => getLatLng (results[0]))
+      .then (latLng => console.log ('Success', latLng))
+      .catch (error => console.error ('Error', error));
+  };
+
+  onChange = address => this.setState ({address});
+
+  render () {
+    const inputProps = {
+      value: this.state.address,
+      onChange: this.onChange,
+    };
+
+    const {incrementCounter, decrementCounter, data} = this.props;
     return (
       <div>
+        <Script
+          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4&libraries=places"
+          onLoad={this.handleScriptLoad} //使用Script提供的onLoad方法，去掌握script是否已經load完成
+        />
         <h1>TestComponent</h1>
         <h3>this is : {data}</h3>
-        <Button onClick={incrementCounter} color='green' content='Increment'/>
-        <Button onClick={decrementCounter} color='red' content='Decrement'/>
+        <Button onClick={incrementCounter} color="green" content="Increment" />
+        <Button onClick={decrementCounter} color="red" content="Decrement" />
+        <br />
+        <br />
+        <form onSubmit={this.handleFormSubmit}>
+          {/* script load 完成才能render PlacesAutocomplete */}
+          {this.state.scriptLoaded && <PlacesAutocomplete inputProps={inputProps} />} 
+          <button type="submit">Submit</button>
+        </form>
       </div>
     );
   }
@@ -32,7 +70,7 @@ class TestComponent extends Component {
 //透過React devTool 可以看到TestComponent component被 connect包起來
 //透過connect 將redux中的state，使用MapStateToProps來傳給目前這個container component
 //透過connect 將redux中的action，使用MapDispatchToProps來傳給目前這個container component
-export default connect(
+export default connect (
   mapState, //MapStateToProps
   actions //MapDispatchToProps
-)(TestComponent);
+) (TestComponent);

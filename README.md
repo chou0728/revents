@@ -5,6 +5,8 @@
 - 使用semantic-ui-react來美化樣式
 - 搭配 revalidate 來實踐表單驗證
 - 使用 react-date, date-fns, moment 來建構datepicker與解決日期在browser上的問題
+- 整合Google Maps Places Autocomplete 與 Google Maps integration 第三方插件
+- 使用 react-places-autocomplete 與 react-load-script 來實踐autocomplete 地址功能
 
 
 ## Available Scripts
