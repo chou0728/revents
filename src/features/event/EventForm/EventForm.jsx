@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Segment, Form, Button, Grid, Header} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {reduxForm, Field} from 'redux-form';
+import moment from 'moment'
 import {composeValidators, combineValidators, isRequired, hasLengthGreaterThan} from 'revalidate'
 import {createEvent, updateEvent} from '../eventActions';
 import cuid from 'cuid';
@@ -71,6 +72,7 @@ class EventForm extends Component {
     // e.preventDefault (); 不需要了，因為redux form 已經處理掉
     //id存在就是編輯，不存在則是新增
 
+    values.date = moment(values.date).format('YYYY/MM/DD HH:mm')
     if (!this.props.match.params.id) {
       const newEvent = {
         ...values,
@@ -134,7 +136,7 @@ class EventForm extends Component {
                 name="date"
                 type="text"
                 component={DateInput}
-                dateFormat="YYYY/MM/DD HH:mm"
+                dateFormat="YYYY-MM-DD HH:mm" //傳給moment的日期格式要符合規定，不能使用 e.g: YYYY/MM/DD
                 timeFormat="HH:mm"
                 showTimeSelect
                 placeholder="Date and Time of event"
