@@ -8,6 +8,7 @@ import cuid from 'cuid';
 import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
+import DateInput from '../../../app/common/form/DateInput';
 
 
 const mapState = (state, ownProps) => {
@@ -50,7 +51,8 @@ const validate = combineValidators({
     hasLengthGreaterThan(4)({message:'Description needs to be at least 5 characters'})
   )(),
   city: isRequired('city'),
-  venue: isRequired('venue')
+  venue: isRequired('venue'),
+  date: isRequired('date')
 
 })
 
@@ -131,8 +133,11 @@ class EventForm extends Component {
               <Field
                 name="date"
                 type="text"
-                component={TextInput}
-                placeholder="Event Date"
+                component={DateInput}
+                dateFormat="YYYY/MM/DD HH:mm"
+                timeFormat="HH:mm"
+                showTimeSelect
+                placeholder="Date and Time of event"
               />
               <Button disabled={invalid || submitting || pristine} positive type="submit">
                 Submit

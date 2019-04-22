@@ -4,6 +4,7 @@
 - 使用redux-form來管理表單驗證與資料增刪改查
 - 使用semantic-ui-react來美化樣式
 - 搭配 revalidate 來實踐表單驗證
+- 使用 react-date, date-fns, moment 來建構datepicker與解決日期在browser上的問題
 
 
 ## Available Scripts
