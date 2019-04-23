@@ -5,6 +5,9 @@ import Script from 'react-load-script';
 import PlacesAutocomplete, { geocodeByAddress,getLatLng } from 'react-places-autocomplete';
 import {incrementCounter, decrementCounter} from './testActions';
 
+// note: 需要去設定google consolge 配額並綁定信用卡才可以使用maps api服務
+// https://www.udemy.com/build-an-app-with-react-redux-and-firestore-from-scratch/learn/v4/questions/5137638
+
 // 將store中的state整合在一起
 const mapState = state => ({
   data: state.test.data,
