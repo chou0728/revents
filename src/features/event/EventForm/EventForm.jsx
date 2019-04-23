@@ -1,8 +1,11 @@
+/* global google */
 import React, {Component} from 'react';
 import {Segment, Form, Button, Grid, Header} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {reduxForm, Field} from 'redux-form';
 import moment from 'moment'
+import Script from 'react-load-script'
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 import {composeValidators, combineValidators, isRequired, hasLengthGreaterThan} from 'revalidate'
 import {createEvent, updateEvent} from '../eventActions';
 import cuid from 'cuid';
@@ -69,6 +72,28 @@ const categoryList = [
 
 class EventForm extends Component {
 
+  state = {
+    cityLatLng: {},
+    venueLatLng: {},
+    scriptLoaded: false,
+  }
+
+  handleScriptLoad = () => {
+    this.setState ({scriptLoaded: true});
+  };
+
+  handleCitySelect = (selectedCity) => {
+    geocodeByAddress(selectedCity)
+      .then(result => getLatLng(result[0]))
+      .then(latlng => this.setState({
+        cityLatLng: latlng
+      }))
+      .then(() => {
+        //告知 redux form select change 觸發了，這樣用滑鼠點才有效
+        this.props.change('city', selectedCity)
+      })
+  }
+
   onFormSubmit = values => {
     // e.preventDefault (); 不需要了，因為redux form 已經處理掉
     //id存在就是編輯，不存在則是新增
@@ -95,6 +120,11 @@ class EventForm extends Component {
     const { invalid, submitting, pristine } = this.props
     return (
       <Grid>
+        {/* 使用 Script 可以不用將CDN掛載在index.html，而是在需要的頁面再去載入，並且監控載入*/}
+        <Script
+          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4&libraries=places"
+          onLoad={this.handleScriptLoad} //使用Script提供的onLoad方法，去掌握script是否已經load完成
+        />
         <Grid.Column width={10}>
           <Segment>
             {/* 將submit交由redux form去處理，但還是可以傳入我們定義的function進去 */}
@@ -127,14 +157,21 @@ class EventForm extends Component {
                 component={PlaceInput}
                 options={{types: ['(cities)']}}
                 placeholder="Event City"
+                onSelect={this.handleCitySelect}
               />
-              <Field
-                name="venue"
-                type="text"
-                component={PlaceInput}
-                options={{types: ['establishment']}}
-                placeholder="Event Venue"
-              />
+              {this.state.scriptLoaded &&
+                <Field
+                  name="venue"
+                  type="text"
+                  component={PlaceInput}
+                  options={{
+                    location: new google.maps.LatLng(this.state.cityLatLng),
+                    radius: 1000, //範圍 1000公尺
+                    types: [ 'establishment' ]
+                  }}
+                  placeholder="Event Venue"
+                />
+              }
               <Field
                 name="date"
                 type="text"
