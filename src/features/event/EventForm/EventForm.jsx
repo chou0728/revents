@@ -94,11 +94,22 @@ class EventForm extends Component {
       })
   }
 
+  handleVenueSelect = (selectedVenue) => {
+    geocodeByAddress(selectedVenue)
+      .then(result => getLatLng(result[ 0 ]))
+      .then(latlng => this.setState({
+        venueLatLng: latlng
+      }))
+      .then(() =>{
+        this.props.change('venue', selectedVenue)
+      })
+  }
+
   onFormSubmit = values => {
     // e.preventDefault (); 不需要了，因為redux form 已經處理掉
     //id存在就是編輯，不存在則是新增
-
     values.date = moment(values.date).format('YYYY/MM/DD HH:mm')
+    values.venueLatLng = this.state.venueLatLng
     if (!this.props.match.params.id) {
       const newEvent = {
         ...values,
@@ -170,6 +181,7 @@ class EventForm extends Component {
                     types: [ 'establishment' ]
                   }}
                   placeholder="Event Venue"
+                  onSelect={this.handleVenueSelect}
                 />
               }
               <Field
