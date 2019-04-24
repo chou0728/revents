@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Button, Icon} from 'semantic-ui-react';
+import {Button} from 'semantic-ui-react';
 import Script from 'react-load-script';
-import GoogleMapReact from 'google-map-react';
 import PlacesAutocomplete, { geocodeByAddress,getLatLng } from 'react-places-autocomplete';
 import {incrementCounter, decrementCounter} from './testActions';
+import {openModal} from '../modals/modalActions'
 
 // note: 需要去設定google consolge 配額並綁定信用卡才可以使用maps api服務
 // https://www.udemy.com/build-an-app-with-react-redux-and-firestore-from-scratch/learn/v4/questions/5137638
@@ -18,9 +18,9 @@ const mapState = state => ({
 const actions = {
   incrementCounter,
   decrementCounter,
+  openModal
 };
 
-const Marker = () => <Icon name='maker' size='big' color='red'/>
 
 class TestComponent extends Component {
   static defaultProps = {
@@ -58,7 +58,7 @@ class TestComponent extends Component {
       onChange: this.onChange,
     };
 
-    const {incrementCounter, decrementCounter, data} = this.props;
+    const {incrementCounter, decrementCounter, data, openModal} = this.props;
     return (
       <div>
         <Script
@@ -69,6 +69,7 @@ class TestComponent extends Component {
         <h3>this is : {data}</h3>
         <Button onClick={incrementCounter} color="green" content="Increment" />
         <Button onClick={decrementCounter} color="red" content="Decrement" />
+        <Button onClick={ () => openModal('TestModal', {data:43})} color="teal" content="Open Modal" />
         <br />
         <br />
         <form onSubmit={this.handleFormSubmit}>
@@ -76,19 +77,6 @@ class TestComponent extends Component {
           {this.state.scriptLoaded && <PlacesAutocomplete inputProps={inputProps} />} 
           <button type="submit">Submit</button>
         </form>
-        <div style={{ height: '300px', width: '100%' }}>
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4' }}
-            defaultCenter={this.props.center}
-            defaultZoom={this.props.zoom}
-          >
-            <Marker
-              lat={59.955413}
-              lng={30.337844}
-              text="My Marker"
-            />
-          </GoogleMapReact>
-        </div>
       </div>
     );
   }
