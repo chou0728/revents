@@ -1,10 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import TestModal from './TestModal'
+import LoginModal from './LoginModal'
+import RegisterModal from './RegisterModal'
+
 
 //用來查詢與列舉現有的modal
 const modalLookup = {
-  TestModal
+  TestModal,
+  LoginModal,
+  RegisterModal
 } 
 
 const mapStates = (state) => ({
