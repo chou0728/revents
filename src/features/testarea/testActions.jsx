@@ -1,5 +1,4 @@
 import { INCREMENT_COUNTER, DECREMENT_COUNTER, COUNTER_ACTION_FINISHED, COUNTER_ACTION_STARTED } from './testConstants';
-import { resolve } from 'url';
 
 // action creators
 export const incrementCounter = () => {

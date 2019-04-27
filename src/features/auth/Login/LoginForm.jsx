@@ -10,10 +10,10 @@ const actions = {
 }
 
 //login從authActions來的，hanldeSubmit 是從reduxForm來的
-const LoginForm = ({ login, hanldeSubmit}) => {
+const LoginForm = ({ login, handleSubmit}) => {
   return (
     // onSubmit時執行hanldeSubmit function，參數為login function
-    <Form error size="large" onSubmit={hanldeSubmit(login)}> 
+    <Form error size="large" onSubmit={handleSubmit(login)}> 
       <Segment>
         <Field
           name="email"

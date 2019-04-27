@@ -33,7 +33,7 @@ class NavBar extends Component {
   render() {
 
     const { auth } = this.props 
-    const { authenticated } = auth.authenticated
+    const { authenticated } = auth
 
     return (
       <Menu inverted fixed="top">
