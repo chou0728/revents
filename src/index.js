@@ -11,7 +11,9 @@ import ScrollToTop from './app/common/util/ScrollToTop';
 import { loadEvents } from './features/event/eventActions'
 
 const store = configureStore();
-store.dispatch(loadEvents()) //讓app一執行時就立刻loadEvents
+ //讓app一執行時就立刻loadEvents
+ //但也可以利用React的lifecycle中的componentDidmount來將api抓完的資料給予component
+store.dispatch(loadEvents())
 
 const rootEl = document.getElementById('root');
 
