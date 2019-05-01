@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Button} from 'semantic-ui-react';
 import Script from 'react-load-script';
 import PlacesAutocomplete, { geocodeByAddress,getLatLng } from 'react-places-autocomplete';
-import {incrementCounter, decrementCounter} from './testActions';
+import {incrementAsync, decrementAsync} from './testActions';
 import {openModal} from '../modals/modalActions'
 
 // note: 需要去設定google consolge 配額並綁定信用卡才可以使用maps api服務
@@ -12,12 +12,13 @@ import {openModal} from '../modals/modalActions'
 // 將store中的state整合在一起
 const mapState = state => ({
   data: state.test.data,
+  loading: state.test.loading
 });
 
 // 將需要用到的action整合在一起
 const actions = {
-  incrementCounter,
-  decrementCounter,
+  incrementAsync,
+  decrementAsync,
   openModal
 };
 
@@ -58,7 +59,7 @@ class TestComponent extends Component {
       onChange: this.onChange,
     };
 
-    const {incrementCounter, decrementCounter, data, openModal} = this.props;
+    const { incrementAsync, decrementAsync, data, openModal, loading} = this.props;
     return (
       <div>
         <Script
@@ -67,8 +68,8 @@ class TestComponent extends Component {
         />
         <h1>TestComponent</h1>
         <h3>this is : {data}</h3>
-        <Button onClick={incrementCounter} color="green" content="Increment" />
-        <Button onClick={decrementCounter} color="red" content="Decrement" />
+        <Button loading={loading} onClick={incrementAsync} color="green" content="Increment" />
+        <Button loading={loading} onClick={decrementAsync} color="red" content="Decrement" />
         <Button onClick={ () => openModal('TestModal', {data:43})} color="teal" content="Open Modal" />
         <br />
         <br />

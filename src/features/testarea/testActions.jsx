@@ -33,7 +33,7 @@ export const incrementAsync = () => {
     return async dispatch => { //async 匿名函式，並傳dispatch下去
         dispatch(startCounterAction())
         await delay(1000)
-        dispatch({ type: INCREMENT_COUNTER})
+        dispatch({ type: INCREMENT_COUNTER}) //可以使用不同的寫法來發動dispatch
         dispatch(finishCounterAction())
     }
 }
