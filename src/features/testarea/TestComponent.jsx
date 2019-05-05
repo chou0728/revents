@@ -63,7 +63,7 @@ class TestComponent extends Component {
     return (
       <div>
         <Script
-          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4&libraries=places"
+          url="https://maps.googleapis.com/maps/api/js?v=weekly&key=AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4&libraries=places"
           onLoad={this.handleScriptLoad} //使用Script提供的onLoad方法，去掌握script是否已經load完成
         />
         <h1>TestComponent</h1>

@@ -133,7 +133,7 @@ class EventForm extends Component {
       <Grid>
         {/* 使用 Script 可以不用將CDN掛載在index.html，而是在需要的頁面再去載入，並且監控載入*/}
         <Script
-          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4&libraries=places"
+          url="https://maps.googleapis.com/maps/api/js?v=weekly&key=AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4&libraries=places"
           onLoad={this.handleScriptLoad} //使用Script提供的onLoad方法，去掌握script是否已經load完成
         />
         <Grid.Column width={10}>

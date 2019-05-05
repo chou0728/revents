@@ -2,7 +2,7 @@ import React from 'react';
 import { Segment, Icon} from 'semantic-ui-react';
 import GoogleMapReact from 'google-map-react';
 
-const Marker = () => <Icon name='maker' size='big' color='red' />
+const Marker = () => <Icon name='marker' size='big' color='red' />
 
 const EventDetailedMap = ({lat, lng}) => {
   const center = [lat, lng];
@@ -11,7 +11,10 @@ const EventDetailedMap = ({lat, lng}) => {
     <Segment attached="bottom" style={{padding:0}}>
       <div style={{height: '300px', width: '100%'}}>
         <GoogleMapReact
-          bootstrapURLKeys={{key: 'AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4'}}
+          bootstrapURLKeys={{
+            key: 'AIzaSyCAn4_Es5taHzNfOxTkmalcCeKC0pbP1r4',
+            version: '3.36'
+          }}
           defaultCenter={center}
           defaultZoom={zoom}
         >
