@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
 import { Grid } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import { deleteEvent } from '../eventReducer';
@@ -7,7 +8,8 @@ import LoadingComponent from '../../../app/layout/LoadingComponent'
 import EventActivity from '../EventActivity/EventActivity'
 
 const mapState = (state) => ({
-  events: state.events,
+  // events: state.events,
+  events: state.firestore.ordered.events, //將原本從redux store中props的值改成由firestore的值
   loading: state.async.loading
 })
 
@@ -44,7 +46,10 @@ class EventDashboard extends Component {
   }
 }
 
-export default connect(mapState, actions)(EventDashboard);
+//再使用一個firestoreConnect HOC，用以連接firstore，在此監聽在firstore中的 events
+export default connect(mapState, actions)(
+  firestoreConnect([{collection: 'events'}])(EventDashboard)
+);
 
 
 // NOTE:

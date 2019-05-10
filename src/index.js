@@ -10,12 +10,12 @@ import App from './app/layout/App';
 import * as serviceWorker from './serviceWorker';
 import { configureStore } from './app/store/configureStore';
 import ScrollToTop from './app/common/util/ScrollToTop';
-import { loadEvents } from './features/event/eventActions'
+// import { loadEvents } from './features/event/eventActions' //用了firestore後就可以不用了
 
 const store = configureStore();
  //讓app一執行時就立刻loadEvents
  //但也可以利用React的lifecycle中的componentDidmount來將api抓完的資料給予component
-store.dispatch(loadEvents())
+// store.dispatch(loadEvents()) //用了firestore後就可以不用了
 
 const rootEl = document.getElementById('root');
 
