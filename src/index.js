@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+// import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import ReduxToastr from 'react-redux-toastr'
 import 'semantic-ui-css/semantic.min.css';
@@ -22,7 +23,7 @@ const rootEl = document.getElementById('root');
 let render = () => {
   ReactDOM.render(
     <Provider store={store}>
-      <BrowserRouter>
+      <HashRouter>
         < ScrollToTop>
           <ReduxToastr
             position='bottom-right'
@@ -33,7 +34,7 @@ let render = () => {
           />
           < App/>
         </ScrollToTop>
-      </BrowserRouter>
+      </HashRouter>
     </Provider>,
     rootEl
   );
