@@ -114,7 +114,7 @@ class EventForm extends Component {
       const newEvent = {
         ...values,
         id: cuid (),
-        hostPhotoURL: '/assets/user.png',
+        hostPhotoURL: 'http://chou0728.github.io/revents/assets/user.png',
         hostedBy: 'Bob'
       };
       this.props.createEvent(newEvent);

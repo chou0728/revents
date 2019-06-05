@@ -19,6 +19,7 @@ const eventImageTextStyle = {
 //直接解構賦值 (因為直接拿到的參數是一個物件裡面包event)
 //相當於 const event = object.event
 const EventDetailedHeader = ({event}) => { 
+  console.log(event)
   return (
        <Segment.Group>
           <Segment basic attached="top" style={{ padding: '0' }}>
