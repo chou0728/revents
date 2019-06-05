@@ -19,11 +19,10 @@ const eventImageTextStyle = {
 //直接解構賦值 (因為直接拿到的參數是一個物件裡面包event)
 //相當於 const event = object.event
 const EventDetailedHeader = ({event}) => { 
-  console.log(event)
   return (
        <Segment.Group>
           <Segment basic attached="top" style={{ padding: '0' }}>
-            <Image src={`/assets/categoryImages/${ event.category}.jpg`} fluid style={eventImageStyle}/>
+            <Image src={`http://chou0728.github.io/revents/assets/categoryImages/${ event.category}.jpg`} fluid style={eventImageStyle}/>
             <Segment basic style={eventImageTextStyle}>
               <Item.Group>
                 <Item>

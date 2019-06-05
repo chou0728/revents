@@ -14,7 +14,6 @@ const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id
 
   let event = {}
-  console.log(state.firestore.ordered.events)
   //如果URL中有帶id參數且store中的event陣列有資料 => 使用filter來return新的值
   if(eventId && state.firestore.ordered.events.length >0) {
 
